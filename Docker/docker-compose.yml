@@ -1,0 +1,31 @@
+php:
+  build: .
+  dockerfile: Dockerfile-php
+  mem_limit: 5000000000
+  memswap_limit: 20000000000
+  dns: 8.8.8.8
+  links:
+    - db:mysql
+  volumes:
+    - /var/www/koalamon/Koalamon:/koalamon:rw
+    - /var/www/koalamon/KoalaInfra/Docker/php.ini:/usr/local/etc/php/php.ini
+  env_file: ../../Koalamon/.env
+  working_dir: /koalamon
+nginx:
+  image: nginx:1.9.4
+  dns: 8.8.8.8
+  links:
+    - php
+  volumes_from:
+    - php
+  volumes:
+    - /var/www/koalamon/KoalaInfra/Docker/vhost_koalamon.conf:/etc/nginx/conf.d/koalamon.conf
+  ports:
+    - "80:8080"
+db:
+  image: mysql:latest
+  env_file: ../../Koalamon/.env
+  volumes:
+    - /var/lib/mysql-data:/data/db
+  ports:
+    - "3306:3306"
