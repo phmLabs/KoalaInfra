@@ -75,13 +75,15 @@ sudo nfsd checkexports && sudo nfsd restart
 
 Then, in your `Koalamon` directory, type:
 
+***Important***: Write each command for itself. Might return 1. Then just repeat.
+
 ```
 eval "$(docker-machine env koalamon)"
 docker-machine ssh koalamon "grep -q '8.8.8.8' /etc/resolv.conf; [ $? -ne 0 ] && echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
 docker-machine ssh koalamon "echo '#\!/bin/sh' | sudo tee /var/lib/boot2docker/bootlocal.sh && sudo chmod 755 /var/lib/boot2docker/bootlocal.sh && echo 'sudo mkdir -p /var/www/koalamon && sudo mount -t nfs -o noatime,soft,nolock,vers=3,udp,proto=udp,rsize=8192,wsize=8192,namlen=255,timeo=10,retrans=3,nfsvers=3 -v 192.168.59.1:`$(echo pwd)`/.. /var/www/koalamon' | sudo tee -a /var/lib/boot2docker/bootlocal.sh"
 docker-machine restart koalamon
 ```
-***Important***: Write each command for itself. Might return 1. Then just repeat.
+
 
 
 Then enter koalamon.local to your /etc/hosts file:
