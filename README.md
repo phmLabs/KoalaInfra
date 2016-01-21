@@ -89,7 +89,7 @@ docker-machine restart koalamon
 Then enter koalamon.local to your /etc/hosts file:
 
 ```
-sudo echo "\n ${docker-machine ip koalamon} koalamon.local >> /etc/hosts
+sudo echo "\n ${docker-machine ip koalamon} koalamon.local" >> /etc/hosts
 ```
 
 ## Setup the docker containers
