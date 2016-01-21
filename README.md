@@ -59,7 +59,7 @@ Clone this repository to some directory that suits your workflow best.
 For example, in your `~/Site` or `~/code` directory:
 
 ```
-mkdir koalamon && cd koalamon && git clone https://bitbucket.org/koalamon/Koalamon
+mkdir koalamon && cd koalamon && git clone https://github.com/koalamon/Koalamon
 ```
 
 ## Set up NFS
