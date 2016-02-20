@@ -53,7 +53,7 @@ docker-machine env koalamon
 eval "$(docker-machine env koalamon)"
 ```
 
-In order that you don't have to write this in every new terminal, write the command in your shell config
+In order that you don't have to write this in every new terminal, execute following command to put it in your shell config
 
 **Bash**
 
