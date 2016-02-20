@@ -53,6 +53,21 @@ docker-machine env koalamon
 eval "$(docker-machine env koalamon)"
 ```
 
+In order that you don't have to write this in every new terminal, write the command in your shell config
+
+**Bash**
+
+```
+echo 'eval "$(docker-machine env koalamon)"' >> ~/.bashrc
+```
+
+**zsh**
+
+```
+echo 'eval "$(docker-machine env koalamon)"' >> ~/.zshrc
+```
+
+
 ## Get the code
 
 Clone this repository to some directory that suits your workflow best.
