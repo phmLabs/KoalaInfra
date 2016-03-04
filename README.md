@@ -80,10 +80,10 @@ mkdir koalamon && cd koalamon && git clone https://github.com/koalamon/Koalamon
 ## Set up NFS
 run the following in your Koalamon's **parent directory**:
 ```
-sudo touch /etc/exports
+sudo touch /etc/exports;
 echo "# Boot2docker
-\"`$(echo pwd)`\" -alldirs -mapall=$(whoami) -network 192.168.59.0 -mask 255.255.255.0" | sudo tee -a /etc/exports
-sudo nfsd checkexports && sudo nfsd restart
+\"`$(echo pwd)`\" -alldirs -mapall=$(whoami) -network 192.168.59.0 -mask 255.255.255.0" | sudo tee -a /etc/exports;
+sudo nfsd checkexports && sudo nfsd restart;
 ```
 
 ## Mount the NFS share into VM
@@ -93,10 +93,10 @@ Then, in your `Koalamon` directory, type:
 ***Important***: Write each command for itself. Might return 1. Then just repeat.
 
 ```
-eval "$(docker-machine env koalamon)"
-docker-machine ssh koalamon "grep -q '8.8.8.8' /etc/resolv.conf; [ $? -ne 0 ] && echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
-docker-machine ssh koalamon "echo '#\!/bin/sh' | sudo tee /var/lib/boot2docker/bootlocal.sh && sudo chmod 755 /var/lib/boot2docker/bootlocal.sh && echo 'sudo mkdir -p /var/www/koalamon && sudo mount -t nfs -o noatime,soft,nolock,vers=3,udp,proto=udp,rsize=8192,wsize=8192,namlen=255,timeo=10,retrans=3,nfsvers=3 -v 192.168.59.1:`$(echo pwd)`/.. /var/www/koalamon' | sudo tee -a /var/lib/boot2docker/bootlocal.sh"
-docker-machine restart koalamon
+eval "$(docker-machine env koalamon)";
+docker-machine ssh koalamon "grep -q '8.8.8.8' /etc/resolv.conf; [ $? -ne 0 ] && echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;";
+docker-machine ssh koalamon "echo '#\!/bin/sh' | sudo tee /var/lib/boot2docker/bootlocal.sh && sudo chmod 755 /var/lib/boot2docker/bootlocal.sh && echo 'sudo mkdir -p /var/www/koalamon && sudo mount -t nfs -o noatime,soft,nolock,vers=3,udp,proto=udp,rsize=8192,wsize=8192,namlen=255,timeo=10,retrans=3,nfsvers=3 -v 192.168.59.1:`$(echo pwd)`/.. /var/www/koalamon' | sudo tee -a /var/lib/boot2docker/bootlocal.sh";
+docker-machine restart koalamon;
 ```
 
 

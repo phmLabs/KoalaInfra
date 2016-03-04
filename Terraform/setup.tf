@@ -29,10 +29,13 @@ resource "heroku_app" "monitor" {
     AWS_REGION = "${var.aws_region}"
     AWS_ACCESS_KEY = "${var.aws_access_key}"
     AWS_ACCESS_SECRET_KEY = "${var.aws_secret_key}"
+    AWS_SQS_QUEUE_URL = "${aws_sqs_queue.koalamon_queue.id}"
+    SQS_PUBLISHING_ENABLED = 1
+    INTEGRATION_KEY_KOALAPING = "27010d2a-5617-ad4u-9f0d-993edf547abc"
     #S3_BUCKET = "${aws_s3_bucket.monitor.id}"
   }
 
-  depends_on = ["aws_s3_bucket.monitor"]
+  depends_on = ["aws_sqs_queue.pagespeed_queue"]
 }
 
 #resource "heroku_addon" "monitor_postmark" {
@@ -57,11 +60,6 @@ resource "heroku_addon" "monitor_scheduler" {
 #  url = "${lookup(var.heroku_log_drain_url,var.app_env)}"
 #}
 
-resource "aws_s3_bucket" "monitor" {
-  bucket = "${var.app_name}-${var.app_env}-app-monitor"
-  acl = "private"
-}
-
 #resource "heroku_domain" "monitor" {
 #  app = "${heroku_app.monitor.name}"
 #  hostname = "${lookup(var.dns_prefix, var.app_env)}monitor.koalamon.com"
@@ -82,90 +80,47 @@ resource "heroku_addon" "ssl" {
 #}
 
 # Heroku Test Apps
-resource "heroku_app" "pagespeed" {
-  name = "${var.app_name}-${var.app_env}-pagespeed"
+resource "heroku_app" "testexecutor" {
+  count = "${lookup(var.testexecutor_count, var.app_env)}"
+  name = "${var.app_name}-${var.app_env}-testexecutor"
   region = "eu"
 
   config_vars {
-    SQS_QUEUE_URL = "${aws_sqs_queue.pagespeed_queue.id}"
     NODE_ENV = "${var.app_env}"
     LOG_LEVEL = "${lookup(var.log_level,var.app_env)}"
     SYMFONY_ENV = "prod"
     SYMFONY_SECRET = "nDs}VJRe3E3;uvHbtGGDG()Kb2R#HWM44oK"
+    AWS_SQS_QUEUE_URL = "${aws_sqs_queue.koalamon_queue.id}"
     AWS_REGION = "${var.aws_region}"
     AWS_ACCESS_KEY = "${var.aws_access_key}"
     AWS_ACCESS_SECRET_KEY = "${var.aws_secret_key}"
-    #S3_BUCKET = "${aws_s3_bucket.pagespeed.id}"
+    #S3_BUCKET = "${aws_s3_bucket.testexecutor.id}"
   }
 
   depends_on = ["aws_sqs_queue.pagespeed_queue"]
 }
 
 resource "heroku_addon" "ssl" {
-  app = "${heroku_app.pagespeed.name}"
-  plan = "ssl"
-}
-
-# Heroku Dispatcher App
-resource "heroku_app" "dispatcher" {
-  name = "${var.app_name}-${var.app_env}-dispatcher"
-  region = "eu"
-
-  config_vars {
-    SQS_PAGESPEED_QUEUE_URL = "${aws_sqs_queue.pagespeed.id}"
-    SQS_JS_ERROR_SCANNER_QUEUE_URL = "${aws_sqs_queue.js_error_scanner_queue.id}"
-    SQS_KOALA_PING_QUEUE_URL = "${aws_sqs_queue.koala_ping_queue.id}"
-    SQS_MISSING_REQUEST_QUEUE_URL = "${aws_sqs_queue.missing_request_queue.id}"
-    SQS_SMOKE_QUEUE_URL = "${aws_sqs_queue.smoke_queue.id}"
-    NODE_ENV = "${var.app_env}"
-    LOG_LEVEL = "${lookup(var.log_level,var.app_env)}"
-    AWS_REGION = "${var.aws_region}"
-    AWS_ACCESS_KEY = "${var.aws_access_key}"
-    AWS_ACCESS_SECRET_KEY = "${var.aws_secret_key}"
-    #S3_BUCKET = "${aws_s3_bucket.pagespeed.id}"
-  }
-
-  depends_on = ["aws_sqs_queue.pagespeed_queue"]
-}
-
-resource "heroku_addon" "ssl" {
-  app = "${heroku_app.pagespeed.name}"
+  app = "${heroku_app.testexecutor.name}"
   plan = "ssl"
 }
 
 # Queue between testdispatcher and tests
-resource "aws_sqs_queue" "pagespeed_queue" {
-  name = "${var.app_name}-${var.app_env}-pagespeed-queue"
-}
-
-resource "aws_sqs_queue" "js_error_scanner_queue" {
-  name = "${var.app_name}-${var.app_env}-js-error-scanner-queue"
-}
-
-resource "aws_sqs_queue" "koala_ping_queue" {
-  name = "${var.app_name}-${var.app_env}-koala-ping-queue"
-}
-
-resource "aws_sqs_queue" "missing_request_queue" {
-  name = "${var.app_name}-${var.app_env}-missing-request-queue"
-}
-
-resource "aws_sqs_queue" "smoke_queue" {
-  name = "${var.app_name}-${var.app_env}-smoke-queue"
+resource "aws_sqs_queue" "koalamon_queue" {
+  name = "${var.app_name}-${var.app_env}-koalamon-queue"
 }
 
 ### Some output
-
-output "HerokuWebApi" {
+output "HerokuMonitorURL" {
   value = "${heroku_app.monitor.web_url}"
 }
 
-output "HerokuApiHostname" {
+output "HerokuMonitorHostname" {
   value = "${heroku_app.monitor.hostname}"
 }
 
-output "WebFrontend" {
-  value = "${aws_s3_bucket.koalamon_web_frontend.website_domain}"
+output "HerokuTestexecutorURL" {
+  value = "${heroku_app.testexecutor.web_url}"
 }
 
 

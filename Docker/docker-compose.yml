@@ -8,9 +8,10 @@ php:
     - db:mysql
   volumes:
     - /var/www/koalamon/Koalamon:/koalamon:rw
+    - /var/www/koalamon/www.leankoala.com:/leankoala:rw
     - /var/www/koalamon/KoalaInfra/Docker/php.ini:/usr/local/etc/php/php.ini
   env_file: ../../Koalamon/.env
-  working_dir: /koalamon
+  working_dir: /leankoala
 nginx:
   image: nginx:1.9.4
   dns: 8.8.8.8

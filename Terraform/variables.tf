@@ -49,6 +49,13 @@ variable "log_level" {
   }
 }
 
+variable "testexecutor_count" {
+  default = {
+    stage = "1"
+    prod = "2"
+  }
+}
+
 variable "api_postmark_size" {
   default = {
     stage = "10k"
