@@ -13,7 +13,7 @@ provider "aws" {
 
 provider "heroku" {
   email = "${var.heroku_login_email}"
-  monitor_key = "${var.heroku_login_monitor_key}"
+  api_key = "${var.heroku_login_api_key}"
 }
 
 ## App Monitor
@@ -35,7 +35,7 @@ resource "heroku_app" "monitor" {
     #S3_BUCKET = "${aws_s3_bucket.monitor.id}"
   }
 
-  depends_on = ["aws_sqs_queue.pagespeed_queue"]
+  depends_on = ["aws_sqs_queue.koalamon_queue"]
 }
 
 #resource "heroku_addon" "monitor_postmark" {
@@ -68,7 +68,7 @@ resource "heroku_addon" "monitor_scheduler" {
 
 
 # SSL
-resource "heroku_addon" "ssl" {
+resource "heroku_addon" "monitor_ssl" {
   app = "${heroku_app.monitor.name}"
   plan = "ssl"
 }
@@ -97,10 +97,10 @@ resource "heroku_app" "testexecutor" {
     #S3_BUCKET = "${aws_s3_bucket.testexecutor.id}"
   }
 
-  depends_on = ["aws_sqs_queue.pagespeed_queue"]
+  depends_on = ["aws_sqs_queue.koalamon_queue"]
 }
 
-resource "heroku_addon" "ssl" {
+resource "heroku_addon" "testexecutor_ssl" {
   app = "${heroku_app.testexecutor.name}"
   plan = "ssl"
 }

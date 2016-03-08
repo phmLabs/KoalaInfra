@@ -56,21 +56,21 @@ variable "testexecutor_count" {
   }
 }
 
-variable "api_postmark_size" {
+variable "monitor_postmark_size" {
   default = {
     stage = "10k"
     prod = "10k"
   }
 }
 
-variable "api_jawsdb_mysql_size" {
+variable "monitor_jawsdb_mysql_size" {
   default = {
     stage = "kitefin"
     prod = "kitefin" #leopard
   }
 }
 
-variable "api_jawsdb_mysql_install" {
+variable "monitor_jawsdb_mysql_install" {
   default = {
     stage = "1"
     prod = "1"
